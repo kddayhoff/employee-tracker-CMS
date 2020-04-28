@@ -1,102 +1,105 @@
-DROP DATABASE IF EXISTS employee_cmsDB
+DROP DATABASE IF EXISTS employee_cmsDB;
 
-CREATE DATABASE employee_cmsDB
+CREATE DATABASE employee_cmsDB;
+
+USE employee_cmsDB;
 
 CREATE TABLE employee (
-    id INT NOT NULL AUTO_INCREMENT,
+    employee_id INT(50) NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    PRIMARY KEY (id),
-    role_id INT FOREIGN KEY REFERENCES role (title)
-    (manager_id) INT FOREIGN KEY REFERENCES role (title)
---    need to figure out how to assign a manager or null
-)
-PersonID int FOREIGN KEY REFERENCES Persons(PersonID)
+    role_id INT,
+    manager_id INT,
+    PRIMARY KEY (employee_id),
+    FOREIGN KEY (role_id) REFERENCES role (role_id)
+);
+
+
 CREATE TABLE role (
-    id INT NOT NULL AUTO_INCREMENT,
+    role_id INT(50) NOT NULL AUTO_INCREMENT,
     title VARCHAR(30),
     salary DECIMAL(6, 0),
-    PRIMARY KEY (id),
-    (department_id) INT FOREIGN KEY REFERENCES department (id)
-)
+    department_id INT,
+    PRIMARY KEY (role_id),
+    FOREIGN KEY (department_id) REFERENCES department (department_id)
+    
+);
 
 CREATE TABLE department (
-    id INT NOT NULL AUTO_INCREMENT,
+    department_id INT NOT NULL AUTO_INCREMENT,
     dept_name VARCHAR(30),
-    PRIMARY KEY (id)
-)
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Itylah", "Tenefer", "", "");
+    PRIMARY KEY (department_id)
+);
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Marflutter", "Fanghoward", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Itylah", "Tenefer");
+
+INSERT INTO department (dept_name)
+value("Owner");
+
+INSERT INTO employee (first_name, last_name)
+VALUES ("Marflutter", "Fanghoward");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Mashrson", "Watsonbow", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Mashrson", "Watsonbow");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Toralk", "Abalham", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Toralk", "Abalham");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Andregat", "Hammashmed", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Andregat", "Hammashmed");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Alexanaphim", "Sanphas", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Alexanaphim", "Sanphas");
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Lophasia", "Cagstillo", "", "");
-
-
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Clala", "Schrharris", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Lophasia", "Cagstillo");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Itylah", "Tenefer", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Clala", "Schrharris");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Marshareeka", "Nuachavez", "", "");
+
+INSERT INTO employee (first_name, last_name)
+VALUES ("Marshareeka", "Nuachavez");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Loperita", "Scori", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Loperita", "Scori");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Ellisette", "Dracowen", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Ellisette", "Dracowen");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Palla", "Warswoon", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Palla", "Warswoon");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Perookie", "Mcdontroll", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Perookie", "Mcdontroll");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Siflutter", "Gonzalight", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Siflutter", "Gonzalight");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Hellins", "Perookie", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Hellins", "Perookie");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Russetho", "Surllins", "", "");
+INSERT INTO employee (first_name, last_name)
+VALUES ("Russetho", "Surllins");
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Stepogo", "Azallen", "", "");
-
-
+INSERT INTO employee (first_name, last_name)
+VALUES ("Stepogo", "Azallen");
 
 ride operators
 game attendant
