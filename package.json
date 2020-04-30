@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/kddayhoff/employee-tracker-CMS#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "inquirer": "^7.1.0",
     "mysql": "^2.18.1"
   }
 }
