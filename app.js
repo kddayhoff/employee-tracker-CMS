@@ -1,30 +1,24 @@
 console.log("Silly rabbit, tricks are for kids!");
 
-// Dependencies
+// Dependencies  -- express is only when front end is used
 const mysql = require("mysql");
-const express = require("express");
-const app = express();
 const inquirer = require("inquirer");
-const env = require("./.env");
+require('dotenv').config()
 
-
-//connecting express
-const PORT = process.env.PORT || 8000;
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static('public'));
 
 //connection mySQL
 const connection = mysql.createConnection({
-  host: env.DB_HOST,
+  host: process.env.DB_HOST,
   port: 3306,
-  username: env.DB_USER,
-  password: env.DB_PASS,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
   database: "employee_cmsDB"
 });
 
  connection.connect(function (err) {
+   if (err) throw err
   console.log("SQL connected as id " + connection.threadId)
+  manageEmployees();
 }); 
 
 // questions for generic employee data
@@ -44,36 +38,23 @@ const employeeData =
 
       
         {
-            type: "list",
-            message: "What is your job title?",
-            name: "title",
-            choices: [
-              "Ride Operator", 
-              "Game Attendant", 
-              "Ride Engineer",
-              "Security",
-              "Manager",
-              "Ticket Sales",
-              "Actor",
-              "Acrobat",
-              "Magician"
-            ],
+            type: "input",
+            message: "What is your job role ID?",
+            name: "roleID",
+            
         },   
-        {   
-            type: "list",
-            name: "department",
-            message: "What is your department?",
-            choices: [
-              "Office",
-              "Grounds",
-              "Entertainment"
-            ],
-        },
+       
         {        
             type: "input",
             name: "salary",
             message: "What is your salary?"
-        }
+        },
+        {
+          type: "input",
+          message: "What is your Manager's ID?",
+          name: "managerID",
+          
+      },  
       ];
 
   //start application here
@@ -83,7 +64,7 @@ const employeeData =
             {
               type: "list",
               message: "What would you like to do?",
-              choices: ["Add Employee", 
+              choices: ["View Employee", "Add Employee", 
               "Update Employee Information", 
               "Delete Employee", 
               "Exit"],
@@ -101,31 +82,24 @@ const employeeData =
                   .then((answer) => {
   //connects to mySQL database to get employee info    
       var query = connection.query([
-        
+        //this insert must match the create employee table in the schema
         "INSERT INTO employee SET ?",
         {
           first_name: answer.firstname,
-          last_name: answer.lastname
-        },
-    
-        "INSERT INTO role SET ?",
-        {
-          title: answer.title,
-          salary: answer.salary
-        },
-        "INSERT INTO department SET ?",
-        {
-          dept_name: answer.department
+          last_name: answer.lastname,
+          role_id: answer.roleID,
+          salary: answer.salary,
+          manager_id: answer.managerID
         }],
       
         function(err, res) {
           console.log("does it work here?");
-          console.log(res);
-          // if (err) throw err;
-          // res.length > 0 && console.table(res);
-          // console.table(query);
          
+          if (err) throw err;
+          // console.table(query);
+         manageEmployees();
         }) 
+        console.log(query.sql);
       })
       break;
       //uses mysql database to update an employees info
@@ -259,4 +233,4 @@ const employeeData =
     });
   }
   
-manageEmployees();
+
