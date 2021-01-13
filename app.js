@@ -3,6 +3,7 @@ console.log("Silly rabbit, tricks are for kids!");
 // Dependencies  -- express is only when front end is used
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const { printTable } = require('console-table-printer');
 require('dotenv').config()
 
 
@@ -43,12 +44,7 @@ const employeeData =
             name: "roleID",
             
         },   
-       
-        {        
-            type: "input",
-            name: "salary",
-            message: "What is your salary?"
-        },
+      
         {
           type: "input",
           message: "What is your Manager's ID?",
@@ -57,6 +53,31 @@ const employeeData =
       },  
       ];
 
+      const roleData =
+      [
+        {
+            type: "input",
+            name: "title",
+            message: "What is your role?"
+        },
+
+        {
+            type: "input",
+            name: "salary",
+            message: "What is your salary?"
+        },
+
+      
+        {
+            type: "input", 
+            name: "departmentID",
+            message: "What is your department ID?",
+        
+        }
+      ];
+
+      
+
   //start application here
       manageEmployees = () => {
         inquirer
@@ -64,9 +85,17 @@ const employeeData =
             {
               type: "list",
               message: "What would you like to do?",
-              choices: ["View Employee", "Add Employee", 
-              "Update Employee Information", 
+              choices: [
+              "Add Department", 
+              "Delete Department",
+              "Add Role", 
+              "Delete Role",
+              "Add Employee", 
+              "View Employee",  
               "Delete Employee", 
+              "Update Employee Role", 
+              "View A Employees by Manager",
+             
               "Exit"],
               name: "options",
             },
@@ -81,29 +110,109 @@ const employeeData =
                   .prompt(employeeData)
                   .then((answer) => {
   //connects to mySQL database to get employee info    
-      var query = connection.query([
+      connection.query(
         //this insert must match the create employee table in the schema
         "INSERT INTO employee SET ?",
         {
           first_name: answer.firstname,
           last_name: answer.lastname,
           role_id: answer.roleID,
-          salary: answer.salary,
           manager_id: answer.managerID
-        }],
+        },
       
         function(err, res) {
           console.log("does it work here?");
          
           if (err) throw err;
-          // console.table(query);
+
+         //view table on terminal - use this for view role, employee, department
+        connection.query(
+          "SELECT * FROM employee", 
+          function(err, res) {
+           printTable(res)
+           
+            if (err) throw err;
+        
          manageEmployees();
+          })
         }) 
-        console.log(query.sql);
       })
+
+
       break;
+
+      case "Add Role":
+                  inquirer
+                  .prompt(roleData)
+                  .then((answer) => {
+  //connects to mySQL database to get employee info    
+      connection.query(
+        //this insert must match the create employee table in the schema
+        "INSERT INTO role SET ?",
+        {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: answer.departmentID
+        },
+      
+        function(err, res) {
+        
+         
+          if (err) throw err;
+
+         //view table on terminal - use this for view role, employee, department
+        connection.query(
+          "SELECT * FROM role", 
+          function(err, res) {
+           printTable(res)
+           
+            if (err) throw err;
+        
+         manageEmployees();
+          })
+        }) 
+      });
+
+      break;
+
+      case "Add Department":
+        inquirer
+        .prompt({
+          type: "input",
+          name: "department",
+          message: "What is the new department name?"
+        })
+        .then((answer) => {
+
+      connection.query(
+        //this insert must match the create employee table in the schema
+        "INSERT INTO department SET ?",
+        {
+         name:answer.department
+        },
+      
+        function(err, res) {
+        
+         
+          if (err) throw err;
+
+         //view table on terminal - use this for view role, employee, department
+        connection.query(
+          "SELECT * FROM department", 
+          function(err, res) {
+           printTable(res)
+           
+            if (err) throw err;
+        
+         manageEmployees();
+          })
+        }) 
+      });
+
+      break;
+
       //uses mysql database to update an employees info
-        case "Update Employee Information":
+        case "Update Employee Role":
           inquirer
                   .prompt([
                       {
@@ -111,88 +220,57 @@ const employeeData =
                         message: "Which Employee would you like to update?",
                         name: "employeeID",
                       },
+                      {
+                        type: "input",
+                        message: "What is the employee's new role?",
+                        name: "changeRoleID"
+                      }
                     ])
                   .then((answer) => {
-              if (answer === employee_id) {
-                    inquirer
-                      .prompt([
-                        {
-                          type: "input",
-                          message: "Change first name",
-                          name: "changeFirstName"
-                        },
-                        {
-                         type: "input",
-                         message: "Change last name",
-                         name: "changeLastName" 
-                        },
-                        {
-                          type: "list",
-                          message:"Change job title",
-                          name: "changeTitle",
-                          choices: [
-                            "Ride Operator", 
-                            "Game Attendant", 
-                            "Ride Engineer",
-                            "Security",
-                            "Manager",
-                            "Ticket Sales",
-                            "Actor",
-                            "Acrobat",
-                            "Magician"
-                          ],
-                        },
-                        {
-                          type: "list",
-                          message: "Change deptartment",
-                          name: "changeDepartment",
-                          choices: [
-                            "Office",
-                            "Grounds",
-                            "Entertainment"
-                          ],
-                        },
-                        {
-                          type: "input",
-                          message: "Change salary",
-                          name: "changeSalary", 
-                        }
-                      ])
-                    }
-              var query = connection.query([
+             console.log(answer)
+              connection.query(
                 "UPDATE employee SET ? WHERE ?",
+                //where employee ID matches, set this new role
                 [
                   {
-                    first_name: answer.changeFirstName
+                    role_id: answer.changeRoleID
                   },
                   {
-                    last_name: answer.changeLastName
+                    id: answer.employeeID
                   }
                 ],
-                "UPDATE role SET ? WHERE ?",
-                [
-                  {
-                    title: answer.changeTitle
-                  },
-                  {
-                    salary: answer.changeSalary
-                  }
-                ], 
-                "UPDATE department SET ? WHERE ?",
-                [
-                  {
-                    dept_name: answer.changeDepartment
-                  }
-                ]
-              ],
+              
+              
           function(err, res) {
             if (err) throw err;
-            res.length > 0 && console.table(res);
-            console.table(query);
-            manageEmployees();
+           
+            connection.query(
+              "SELECT * FROM employee", 
+              function(err, res) {
+               printTable(res)
+               
+                if (err) throw err;
+            
+             manageEmployees();
+              })
           })
         }) 
+
         break;
+        
+        case "View Employee":
+          connection.query(
+            "SELECT * FROM employee", 
+            function(err, res) {
+             printTable(res)
+             
+              if (err) throw err;
+          
+           manageEmployees();
+            })
+        break;
+
+        
         //this will allow a user to delete an employee
         case "Delete Employee":
           inquirer
@@ -204,23 +282,30 @@ const employeeData =
                       },
                     ])
                   .then((answer) => {
-              if (answer === employee_id) {
+             
                
-              var query = connection.query(
-                [
+             connection.query(
+                
                  "DELETE FROM employee WHERE ?",
                 {
-                  employee_id: answer.employeeDel
+                  id: answer.employeeDel
                 }
-               ],
+               ,
           function(err, res) {
+            
             if (err) throw err;
-            res.length > 0 && console.table(res);
-            console.table(query);
-            manageEmployees();
+            connection.query(
+              "SELECT * FROM employee", 
+              function(err, res) {
+               printTable(res)
+               
+                if (err) throw err;
+            
+             manageEmployees();
+              })
           })
         } 
-      }) 
+      ) 
       break; 
       //this end the application from running
       case "Exit":
